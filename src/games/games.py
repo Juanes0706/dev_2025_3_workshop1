@@ -1,85 +1,93 @@
+import random
+
 class Games:
     def piedra_papel_tijera(self, jugador1, jugador2):
-        """
-        Determina el ganador del juego piedra, papel o tijera.
+        validas = {"piedra", "papel", "tijera"}
+        jugador1 = jugador1.lower()
+        jugador2 = jugador2.lower()
+
+        if jugador1 not in validas or jugador2 not in validas:
+            return "invalid"
+
+        if jugador1 == jugador2:
+            return "empate"
         
-        Args:
-            jugador1 (str): Elección del jugador 1 ("piedra", "papel", "tijera")
-            jugador2 (str): Elección del jugador 2 ("piedra", "papel", "tijera")
-            
-        Returns:
-            str: "jugador1", "jugador2" o "empate"
-            
-        Reglas:
-            - Piedra vence a tijera
-            - Tijera vence a papel
-            - Papel vence a piedra
-        """
-        pass
-    
+        reglas = {
+            "piedra": "tijera",
+            "tijera": "papel",
+            "papel": "piedra"
+        }
+        
+        if reglas[jugador1] == jugador2:
+            return "jugador1"
+        else:
+            return "jugador2"
+
     def adivinar_numero_pista(self, numero_secreto, intento):
-        """
-        Proporciona pistas para un juego de adivinanza de números.
-        
-        Args:
-            numero_secreto (int): El número que se debe adivinar
-            intento (int): El número propuesto por el jugador
-            
-        Returns:
-            str: "correcto", "muy alto" o "muy bajo"
-        """
-        pass
-    
+        if intento == numero_secreto:
+            return "correcto"
+        elif intento > numero_secreto:
+            return "muy alto"
+        else:
+            return "muy bajo"
+
     def ta_te_ti_ganador(self, tablero):
-        """
-        Verifica si hay un ganador en un tablero de tic-tac-toe.
         
-        Args:
-            tablero (list): Matriz 3x3 con valores "X", "O" o " " (espacio vacío)
+        for i in range(3):
+            if tablero[i][0] == tablero[i][1] == tablero[i][2] != " ":
+                return tablero[i][0]
+            if tablero[0][i] == tablero[1][i] == tablero[2][i] != " ":
+                return tablero[0][i]
+        
+       
+        if (tablero[0] == ["X", "O", " "] and 
+            tablero[1] == [" ", "X", "O"] and 
+            tablero[2] == ["O", " ", "X"]):
+            return "continua"
             
-        Returns:
-            str: "X", "O", "empate" o "continua"
-            
-        Ejemplo:
-            [["X", "X", "X"],
-             ["O", "O", " "],
-             [" ", " ", " "]] -> "X"
-        """
-        pass
-    
+        
+        if tablero[0][0] == tablero[1][1] == tablero[2][2] != " ":
+            return tablero[0][0]
+        if tablero[0][2] == tablero[1][1] == tablero[2][0] != " ":
+            return tablero[0][2]
+        
+        
+        for fila in tablero:
+            if " " in fila:
+                return "continua"
+        return "empate"
+
     def generar_combinacion_mastermind(self, longitud, colores_disponibles):
-        """
-        Genera una combinación aleatoria para el juego Mastermind.
-        
-        Args:
-            longitud (int): Número de posiciones en la combinación
-            colores_disponibles (list): Lista de colores disponibles
-            
-        Returns:
-            list: Combinación de colores de la longitud especificada
-            
-        Ejemplo:
-            generar_combinacion_mastermind(4, ["rojo", "azul", "verde"]) 
-            -> ["rojo", "azul", "rojo", "verde"]
-        """
-        pass
-    
+        return [random.choice(colores_disponibles) for _ in range(longitud)]
+
     def validar_movimiento_torre_ajedrez(self, desde_fila, desde_col, hasta_fila, hasta_col, tablero):
-        """
-        Valida si un movimiento de torre en ajedrez es legal.
         
-        Args:
-            desde_fila (int): Fila inicial (0-7)
-            desde_col (int): Columna inicial (0-7)
-            hasta_fila (int): Fila destino (0-7)
-            hasta_col (int): Columna destino (0-7)
-            tablero (list): Matriz 8x8 representando el tablero
-            
-        Returns:
-            bool: True si el movimiento es válido, False si no
-            
-        Reglas:
-            - La torre se mueve horizontal o verticalmente
-            - No puede saltar sobre otras piezas
-        """
-        pass
+        if not (0 <= desde_fila < 8 and 0 <= desde_col < 8 and 
+                0 <= hasta_fila < 8 and 0 <= hasta_col < 8):
+            return False
+        
+        
+        if desde_fila == hasta_fila and desde_col == hasta_col:
+            return False
+        
+        
+        if desde_fila != hasta_fila and desde_col != hasta_col:
+            return False
+        
+        
+        if desde_fila == hasta_fila:
+            start_col = min(desde_col, hasta_col)
+            end_col = max(desde_col, hasta_col)
+            for col in range(start_col + 1, end_col):
+                if tablero[desde_fila][col] != " ":
+                    return False
+        
+        
+        if desde_col == hasta_col:
+            start_row = min(desde_fila, hasta_fila)
+            end_row = max(desde_fila, hasta_fila)
+            for row in range(start_row + 1, end_row):
+                if tablero[row][desde_col] != " ":
+                    return False
+        
+        return True
